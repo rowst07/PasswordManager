@@ -15,7 +15,33 @@ public abstract class PassRoomDatabase : RoomDatabase() {
 
     abstract fun passDao(): PassDao
 
+    private class PasswordDatabaseCallback(
+        private val scope: CoroutineScope
+    ) : RoomDatabase.Callback() {
+
+        override fun onOpen(db: SupportSQLiteDatabase) {
+            super.onOpen(db)
+            INSTANCE?.let { database ->
+                scope.launch {
+                    populateDatabase(database.passDao())
+                }
+            }
+        }
+
+        suspend fun populateDatabase(passDao: PassDao) {
+            passDao.deleteAll()//Apaga todos os conteúdos da base de dados
+
+            // Adiciona palavras-passe teste
+            var password = Password("Bom") //Criação de uma palavra passe
+            passDao.insert(password) //Inserção na base de dados
+            password = Password("Diaaaaaaaaaaaaaaaaaaaa")
+            passDao.insert(password)
+
+        }
+    }
+
     companion object {
+
         @Volatile
         private var INSTANCE: PassRoomDatabase? = null
 
@@ -23,50 +49,21 @@ public abstract class PassRoomDatabase : RoomDatabase() {
             context: Context,
             scope: CoroutineScope
         ): PassRoomDatabase {
-
-            return INSTANCE ?: synchronized(this) {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     PassRoomDatabase::class.java,
-                    "word_database"
+                    "pass_database"
                 )
-                    .fallbackToDestructiveMigration()
                     .addCallback(PasswordDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
-                // return instance
-                instance
+                return instance
             }
-        }
-
-        private class PasswordDatabaseCallback(
-            private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
-            /**
-             * Override the onOpen method to populate the database.
-             * For this sample, we clear the database every time it is created or opened.
-             */
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                // If you want to keep the data through app restarts,
-                // comment out the following line.
-                INSTANCE?.let { database ->
-                    scope.launch(Dispatchers.IO) {
-                        populateDatabase(database.passDao())
-                    }
-                }
-            }
-        }
-
-        fun populateDatabase(passDao: PassDao) {
-            // Start the app with a clean database every time.
-            // Not needed if you only populate on creation.
-            passDao.deleteAll()
-
-            var pass = Password("Hello")
-            passDao.insert(pass)
-            pass = Password("World!")
-            passDao.insert(pass)
         }
     }
 }

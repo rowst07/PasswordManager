@@ -10,10 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ipca.passwordman.a18064.PassDao as PassDao
 
 class MainActivity : AppCompatActivity() {
-    private val newPasswordActivityRequestCode = 1
     private lateinit var passwordViewModel: PassViewModel
+    private val newPasswordActivityRequestCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,10 +24,8 @@ class MainActivity : AppCompatActivity() {
         val adapter = PassListAdapter(this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         passwordViewModel = ViewModelProvider(this).get(PassViewModel::class.java)
         passwordViewModel.allPass.observe(this, Observer { pass ->
-            // Update the cached copy of the words in the adapter.
             pass?.let { adapter.setPasswords(it) }
         })
 
@@ -36,22 +35,19 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, newPasswordActivityRequestCode)
         }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intentData)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newPasswordActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            intentData?.let { data ->
-                val word = Password(data.getStringExtra(NewPasswordActivity.EXTRA_REPLY))
-                passwordViewModel.insert(word)
-                Unit
+            data?.getStringExtra(NewPasswordActivity.EXTRA_REPLY)?.let {
+                val Password = Password(it)
+                passwordViewModel.insert(Password)
             }
         } else {
             Toast.makeText(
                 applicationContext,
                 R.string.empty_not_saved,
-                Toast.LENGTH_LONG
-            ).show()
+                Toast.LENGTH_LONG).show()
         }
     }
 }
