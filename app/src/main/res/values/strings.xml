@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Password Manager</string>
-    <string name="add_pass">Adicionar Palavra-passe</string>
+    <string name="add_pass">Add Password</string>
+    <string name="hint_password">Password...</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Password not saved because it is empty.</string>
 </resources>

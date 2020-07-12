@@ -25,7 +25,7 @@ class PassListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: PassViewHolder, position: Int) {
         val current = passwords[position]
-        holder.PassItemView.text = current.password
+        holder.PassItemView.text = current.passwords
     }
 
     internal fun setPasswords(passes: List<Password>) {

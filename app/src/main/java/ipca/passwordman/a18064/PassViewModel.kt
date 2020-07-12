@@ -17,7 +17,7 @@ class PassViewModel(application: Application) : AndroidViewModel(application) {
     val allPass: LiveData<List<Password>>
 
     init {
-        val wordsDao = PassRoomDatabase.getDatabase(application).passDao()
+        val wordsDao = PassRoomDatabase.getDatabase(application, viewModelScope).passDao()
         repository = PassRepository(wordsDao)
         allPass = repository.allPass
     }

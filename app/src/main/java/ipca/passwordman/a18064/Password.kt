@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Entity(tableName = "pass_table")
-class Password(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "pass") var password: String, var site: String, var description: String, var date: String)
+data class Password(
+    @PrimaryKey
+    @ColumnInfo(name = "pass") var passwords: String, var site: String, var description: String, var date: String)
 
 interface PassDao {
 
