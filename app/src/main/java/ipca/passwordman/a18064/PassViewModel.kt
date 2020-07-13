@@ -10,10 +10,7 @@ import kotlinx.coroutines.launch
 class PassViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PassRepository
-    // Using LiveData and caching what getAlphabetizedWords returns has several benefits:
-    // - We can put an observer on the data (instead of polling for changes) and only update the
-    //   the UI when the data actually changes.
-    // - Repository is completely separated from the UI through the ViewModel.
+
     val allPass: LiveData<List<Password>>
 
     init {
@@ -27,5 +24,9 @@ class PassViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun insert(pass: Password) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(pass)
+    }
+
+    fun delete(pass: Password) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(pass)
     }
 }

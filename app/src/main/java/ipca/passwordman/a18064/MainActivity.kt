@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +16,7 @@ import ipca.passwordman.a18064.PassDao as PassDao
 class MainActivity : AppCompatActivity() {
     private lateinit var passwordViewModel: PassViewModel
     private val newPasswordActivityRequestCode = 1
+    private val deletePasswordActivityRequestCode = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,12 @@ class MainActivity : AppCompatActivity() {
         passwordViewModel.allPass.observe(this, Observer { pass ->
             pass?.let { adapter.setPasswords(it) }
         })
+
+        val button_delete = findViewById<Button>(R.id.delete)
+        button_delete.setOnClickListener {
+            val intent = Intent(this@MainActivity, DeletePasswordActivity::class.java)
+            startActivity(intent)
+        }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
@@ -43,11 +51,13 @@ class MainActivity : AppCompatActivity() {
                 val Password = Password(it)
                 passwordViewModel.insert(Password)
             }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG).show()
+        }
+
+        if (requestCode == deletePasswordActivityRequestCode && resultCode == Activity.RESULT_OK) {
+            data?.getStringExtra(DeletePasswordActivity.EXTRA_REPLY)?.let {
+                val Password = Password(it)
+                passwordViewModel.delete(Password)
+            }
         }
     }
 }

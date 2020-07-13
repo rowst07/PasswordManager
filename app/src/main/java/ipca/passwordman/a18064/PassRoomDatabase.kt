@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// Annotates class to be a Room Database with a table (entity) of the Word class
+
 @Database(entities = [Password::class], version = 1, exportSchema = false)
 public abstract class PassRoomDatabase : RoomDatabase() {
 

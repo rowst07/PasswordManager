@@ -1,10 +1,7 @@
 package ipca.passwordman.a18064
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface PassDao {
@@ -17,4 +14,7 @@ interface PassDao {
 
     @Query("DELETE FROM pass_table")
     suspend fun deleteAll()
+
+    @Delete
+    fun delete(password: Password)
 }
