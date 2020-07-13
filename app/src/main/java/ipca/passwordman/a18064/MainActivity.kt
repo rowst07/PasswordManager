@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             pass?.let { adapter.setPasswords(it) }
         })
 
-        val button_delete = findViewById<Button>(R.id.delete)
+        val button_delete = findViewById<FloatingActionButton>(R.id.delete)
         button_delete.setOnClickListener {
             val intent = Intent(this@MainActivity, DeletePasswordActivity::class.java)
             startActivity(intent)
